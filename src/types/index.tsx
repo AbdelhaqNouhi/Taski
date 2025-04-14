@@ -13,14 +13,3 @@ export interface Tasks {
     status: "in_progress" | "completed";
     assignedTo: string;
 }
-
-
-export type PaginationProps ={
-    currentPage: number;
-    totalPages: number;
-    totalElements: number;
-    page: number;
-    size: number;
-    first: boolean;
-    last: boolean;
-}

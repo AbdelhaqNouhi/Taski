@@ -1,8 +1,8 @@
-import { authMiddleware } from "./middlewares/authMiddleware";
+import { authConnection } from "./middlewares/authConnection";
 import {NextRequest, NextResponse} from "next/server";
 
 export function middleware(req: NextRequest) {
-    return authMiddleware(req);
+    return authConnection(req);
 }
 
 export const config = {
