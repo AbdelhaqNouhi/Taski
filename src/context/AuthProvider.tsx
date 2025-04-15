@@ -1,14 +1,12 @@
 // context/AuthProvider.tsx
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import axios from "@/lib/axiosInstance";
 import { jwtDecode } from "jwt-decode";
-
 
 interface AuthContextType {
     connected: boolean;
     username: string | null;
-    loading: boolean;
+    authLoading: boolean;
     role: string | null;
     checkConnection: () => Promise<void>;
     logout: () => Promise<void>;
@@ -19,62 +17,64 @@ const AuthContext = createContext<AuthContextType | null>(null);
 const isTokenExpired = (token: string): boolean => {
     try {
         const decoded: { exp: number } = jwtDecode(token);
-        return decoded.exp * 1000 < Date.now(); // Convert `exp` from seconds to milliseconds
+        return decoded.exp * 1000 < Date.now(); // Convert exp to ms
     } catch {
-        return true; // If decoding fails, assume token is invalid
+        return true;
     }
 };
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [connected, setConnected] = useState<boolean>(false);
-    const [loading, setLoading] = useState(true);
+    const [connected, setConnected] = useState(false);
+    const [authLoading, setAuthLoading] = useState(true);
     const [role, setRole] = useState<string | null>(null);
     const [username, setUsername] = useState<string | null>(null);
     const router = useRouter();
 
-    useEffect(() => {
-        checkConnection();
-    }, []);
-
     const checkConnection = async () => {
-        setLoading(true);
+        setAuthLoading(true);
         try {
             const token = localStorage.getItem("token");
-    
+
             if (!token || isTokenExpired(token)) {
                 setConnected(false);
+                setAuthLoading(false);
                 setRole(null);
                 setUsername(null);
-                return;
+            } else {
+                const decoded: any = jwtDecode(token);
+                setConnected(true);
+                setRole(decoded.role ?? null);
+                setUsername(decoded.username ?? null);
             }
-    
-            const decoded: any = jwtDecode(token);
-            setConnected(true);
-            setRole(decoded.role);
-            setUsername(decoded.username);
         } catch (error) {
-            console.log("Connection check error:", error);
+            console.error("Connection check error:", error);
             setConnected(false);
             setRole(null);
+            setUsername(null);
         } finally {
-            setLoading(false);
+            setAuthLoading(false);
         }
     };
 
     const logout = async () => {
         localStorage.removeItem("token");
-        localStorage.removeItem("token");
         setConnected(false);
+        setRole(null);
+        setUsername(null);
         await router.push("/login");
     };
+
+    useEffect(() => {
+        checkConnection();
+    }, []);
 
     return (
         <AuthContext.Provider
             value={{
-                username,
-                role,
                 connected,
-                loading,
+                username,
+                authLoading,
+                role,
                 checkConnection,
                 logout,
             }}
@@ -84,10 +84,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     );
 };
 
-
-
 export const useAuth = () => {
     const context = useContext(AuthContext);
-    if (!context) throw new Error("useAuth must be used within an AuthProvider");
+    if (!context) {
+        throw new Error("useAuth must be used within an AuthProvider");
+    }
     return context;
 };
