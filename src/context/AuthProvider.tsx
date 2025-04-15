@@ -1,7 +1,7 @@
-// context/AuthProvider.tsx
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { jwtDecode } from "jwt-decode";
+
 
 interface AuthContextType {
     connected: boolean;
@@ -17,7 +17,7 @@ const AuthContext = createContext<AuthContextType | null>(null);
 const isTokenExpired = (token: string): boolean => {
     try {
         const decoded: { exp: number } = jwtDecode(token);
-        return decoded.exp * 1000 < Date.now(); // Convert exp to ms
+        return decoded.exp * 1000 < Date.now();
     } catch {
         return true;
     }
@@ -36,10 +36,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             const token = localStorage.getItem("token");
 
             if (!token || isTokenExpired(token)) {
-                setConnected(false);
-                setAuthLoading(false);
-                setRole(null);
-                setUsername(null);
+                logout()
             } else {
                 const decoded: any = jwtDecode(token);
                 setConnected(true);
@@ -58,6 +55,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const logout = async () => {
         localStorage.removeItem("token");
+        document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         setConnected(false);
         setRole(null);
         setUsername(null);

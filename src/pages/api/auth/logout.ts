@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { serialize } from "cookie"; // Use destructuring to access serialize function
+import { serialize } from "cookie";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
@@ -8,7 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             [
                 serialize("token", "", {
                     httpOnly: true,
-                    secure: process.env.NODE_ENV === "production", // Use secure flag in production
+                    secure: process.env.NODE_ENV === "production",
                     sameSite: "strict",
                     path: "/",
                     maxAge: 0,

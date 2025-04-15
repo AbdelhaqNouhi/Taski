@@ -2,8 +2,6 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { serialize } from "cookie";
 import api from "@/lib/axiosInstance";
 
-console.log('deeeeeeeeeeeeeeeeeeeeeeeeee');
-
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== "POST") {
         return res.status(405).json({ message: "Method Not Allowed" });
@@ -21,11 +19,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             return res.status(401).json({ message: "Invalid credentials" });
         }
 
-        // ✅ Set the token in a cookie
         res.setHeader("Set-Cookie", serialize("token", token,  {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            maxAge: 60 * 60 * 24, // 1 day
+            maxAge: 60 * 60,
             sameSite: "strict",
             path: "/",
         }));

@@ -1,29 +1,37 @@
-import React, {useState, useMemo} from "react";
+import React, {useState, useMemo, useEffect} from "react";
 import {MainModal} from "@/components/ui/";
 import {usePagination} from "@/hooks";
-import {Input, Textarea, Select, SelectItem} from "@heroui/react";
+import {Input, Textarea, Select, SelectItem, button} from "@heroui/react";
+import axios from "axios";
+import {useTasksData} from "@/context/TasksProvider";
 
 interface ActionsModalProps {
     isOpen: boolean;
     onClose: () => void;
+    type: string;
+    updateData?: FormData; 
 }
 
 interface FormData {
+    id: string;
     title: string;
     assignedTo: string;
     description: string;
 }
 
-const ActionsModal: React.FC<ActionsModalProps> = ({isOpen, onClose}) => {
+const ActionsModal: React.FC<ActionsModalProps> = ({isOpen, onClose, type, updateData}) => {
+    
+    const {refetch} = useTasksData();
+    const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [isDisabled, setIsDisabled] = useState(false);
     const [formData, setFormData] = useState<FormData>({
+        id: updateData?.id || "", 
         title: "",
         assignedTo: "",
         description: "",
     });
-
-    const { data, error} = usePagination("/user/getAll");
+    const {data, loading: dataLoading} = usePagination("/user/getAll");
 
     const userItems = useMemo(
         () =>
@@ -42,29 +50,87 @@ const ActionsModal: React.FC<ActionsModalProps> = ({isOpen, onClose}) => {
     };
 
     const formValidation = useMemo(() => {
-        const requiredFields = [
-            "title",
-            "description",
-            "assignedTo",
-        ];
+        const requiredFields = ["title", "description", "assignedTo"];
         const isValid = requiredFields.some((field) => !formData[field]);
         setIsDisabled(isValid);
         return isValid;
     }, [formData]);
 
-    const handleSubmit = async () => {
+    const handleAddTask = async () => {
         setLoading(true);
-
-        console.log("Form submitted:", formData);
-
-        setLoading(false);
+        try {
+            const token = localStorage.getItem("token");
+            const response = await axios.post("/api/tasks/create", formData, {
+                headers: {
+                    Authorization: token || "",
+                },
+            });
+            if (response.status === 200) {
+                refetch();
+                setLoading(false);
+                onClose();
+            } else {
+                setError("Failed to create task");
+                setLoading(false);
+            }
+        } catch (error) {
+            setError("Failed to create task");
+            setLoading(false);
+        }
     };
 
+    const handleUpdateTask = async () => {
+        setLoading(true);
+        try {
+            const token = localStorage.getItem("token");
+            const response = await axios.put(`/api/tasks/update/${updateData.id}`, formData, {
+                headers: {
+                    Authorization: token || "",
+                },
+            });
+
+            if (response.status === 200) {
+                refetch();
+                setLoading(false);
+                onClose();
+            } else {
+                setError("Failed to update task");
+                setLoading(false);
+            }
+        } catch (error) {
+            setError("Failed to update task");
+            setLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        if (isOpen) {
+            if (type === "update" && updateData) {
+                setFormData({
+                    id: updateData.id,
+                    title: updateData.title || "",
+                    assignedTo: updateData.assignedTo || "",
+                    description: updateData.description || "",
+                });
+            } else if (type === "add") {
+                setFormData({
+                    id: "",
+                    title: "",
+                    assignedTo: "",
+                    description: "",
+                });
+            }
+        }
+    }, [isOpen, type, updateData]);
+
+    if (!isOpen) return null;
+
+    
     return (
         <MainModal isOpen={isOpen} onClose={onClose} title="" backdrop="blur">
             <section className="w-[550px] flex flex-col gap-6 p-4">
                 <span className="flex items-center justify-center text-customGreen font-semibold text-2xl">
-                    Add Task
+                    {type === "add" ? "Add Task" : "Update Task"}
                 </span>
                 <div className="grid grid-cols-2 gap-4 font-semibold">
                     <div className="grid col-span-1">
@@ -85,18 +151,22 @@ const ActionsModal: React.FC<ActionsModalProps> = ({isOpen, onClose}) => {
                     </div>
                     <div className="grid col-span-1">
                         <Select
-                            onChange={(e) => handleInputChange("assignedTo")(e.target.value)}
+                            onChange={(e) =>
+                                handleInputChange("assignedTo")(e.target.value)
+                            }
+                            selectedKeys={formData.assignedTo ? [formData.assignedTo] : []} 
                             className="max-w-xs"
                             labelPlacement="outside"
                             items={userItems}
-                            label="Favorite Animal"
-                            placeholder="Select an animal"
+                            label="Assign to"
+                            placeholder="Assign to"
                             radius="lg"
                             size="lg"
-                            >
-                            {(user: { key: string; label: string }) => (
+                            isLoading={dataLoading}
+                        >
+                            {(user: {key: string; label: string}) => (
                                 <SelectItem key={user.key}>
-                                {user.label}
+                                    {user.label}
                                 </SelectItem>
                             )}
                         </Select>
@@ -119,15 +189,29 @@ const ActionsModal: React.FC<ActionsModalProps> = ({isOpen, onClose}) => {
                     />
                 </div>
                 <div className="flex justify-end gap-3">
-                    <button className="bg-[#F5F7F9] text-red-500 font-semibold py-2.5 px-5 rounded-lg">
+                    <button
+                        onClick={onClose}
+                        className="bg-[#F5F7F9] text-red-500 font-semibold py-2.5 px-5 rounded-lg"
+                    >
                         Cancel
                     </button>
-                    <button
-                        onClick={handleSubmit}
-                        disabled={isDisabled || loading || formValidation}
-                        className="bg-blue-500 text-white font-semibold py-2.5 px-5 rounded-lg">
-                        {loading ? "Loading..." : "Add Task"}
-                    </button>
+                    {type === "add" ? (
+                        <button
+                            onClick={handleAddTask}
+                            disabled={isDisabled || loading || formValidation}
+                            className="bg-blue-500 text-white font-semibold py-2.5 px-5 rounded-lg"
+                        >
+                            {loading ? "Loading..." : "Add Task"}
+                        </button>
+                    ): (
+                        <button
+                            onClick={handleUpdateTask}
+                            disabled={isDisabled || loading || formValidation}
+                            className="bg-blue-500 text-white font-semibold py-2.5 px-5 rounded-lg"
+                        >
+                            {loading ? "Loading..." : "Save"}
+                        </button>
+                    )}
                 </div>
             </section>
         </MainModal>

@@ -1,5 +1,5 @@
 import {FC, ReactNode} from "react";
-import {Modal, ModalContent, ModalHeader, ModalBody} from "@heroui/react";
+import {Modal, ModalContent, ModalBody} from "@heroui/react";
 
 interface PopupProps {
     children: ReactNode;

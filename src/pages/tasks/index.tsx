@@ -1,20 +1,20 @@
-import React, {ReactNode, useEffect} from "react";
+import React, {useState} from "react";
 import {MainLayout} from "@/components";
 import {TaskLayout} from "@/components";
-import {useAuth} from "@/context/AuthProvider";
 import {useTasksData} from "@/context/TasksProvider";
-import {TaskCard} from "@/components/pageItems/tasks";
-import {useDisclosure} from "@heroui/react";
+import {TaskCard} from "@/components/pageItems/tasks";;
 
 const TasksContent = () => {
     const {data, loading} = useTasksData();
-    const [currentPage, setCurrentPage] = React.useState(1);
+    const [currentPage, setCurrentPage] = useState(1);
     const tasksPerPage = 5;
     const totalPages = Math.ceil(data.length / tasksPerPage);
     const currentTasks = data.slice(
         (currentPage - 1) * tasksPerPage,
         currentPage * tasksPerPage
     );
+    console.log();
+    
 
     return (
         <div className="">
@@ -23,16 +23,17 @@ const TasksContent = () => {
                     No tasks available
                 </span>
             )}
-            {loading ? (
+            {loading && data.length === 0 ? (
                 <div className="flex justify-center items-center h-full">
                     <span className="text-lg font-semibold">Loading...</span>
                 </div>
             ) : (
-                <div className="flex flex-col gap-6">
+                <div className="flex flex-col gap-5">
                     <section className="flex flex-col gap-4 h-[370px] overflow-y-auto">
                         {currentTasks.map((task) => (
                             <TaskCard
                                 key={task.id}
+                                id={task.id}
                                 title={task.title}
                                 description={task.description}
                                 status={task.status}
@@ -62,10 +63,9 @@ const TasksContent = () => {
 };
 
 const Tasks = () => {
-    const {role} = useAuth();
     return (
-        <MainLayout role={role}>
-            <TaskLayout role={role}>
+        <MainLayout>
+            <TaskLayout>
                 <TasksContent />
             </TaskLayout>
         </MainLayout>
