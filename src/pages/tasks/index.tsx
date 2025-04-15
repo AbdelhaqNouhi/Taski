@@ -41,21 +41,23 @@ const TasksContent = () => {
                             />
                         ))}
                     </section>
-                    <div className="flex justify-center gap-2">
-                        {Array.from({length: totalPages}, (_, i) => (
-                            <button
-                                key={i}
-                                onClick={() => setCurrentPage(i + 1)}
-                                className={`px-4 py-2 rounded ${
-                                    currentPage === i + 1
-                                        ? "bg-blue-500 text-white"
-                                        : "bg-gray-200 text-gray-700"
-                                }`}
-                            >
-                                {i + 1}
-                            </button>
-                        ))}
-                    </div>
+                    {totalPages > 1 && (
+                        <div className="flex justify-center gap-2">
+                            {Array.from({ length: totalPages }, (_, i) => (
+                                <button
+                                    key={i}
+                                    onClick={() => setCurrentPage(i + 1)}
+                                    className={`px-4 py-2 rounded ${
+                                        currentPage === i + 1
+                                            ? "bg-blue-500 text-white"
+                                            : "bg-gray-200 text-gray-700"
+                                    }`}
+                                >
+                                    {i + 1}
+                                </button>
+                            ))}
+                        </div>
+                    )}
                 </div>
             )}
         </div>

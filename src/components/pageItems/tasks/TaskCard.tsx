@@ -2,6 +2,8 @@ import React from 'react'
 import { PencilIcon, TrashIcon, CheckCircleIcon } from '@heroicons/react/24/outline'
 import { useDisclosure } from '@heroui/react';
 import {ActionsModal} from "@/components/pageItems/modals";
+import axios from 'axios';
+import { useTasksData } from '@/context/TasksProvider';
 
 interface CardProps {
     id: string;
@@ -18,7 +20,28 @@ const TaskCard = ({id, title, description, status, assignedTo }: CardProps) => {
         description: description,
         assignedTo: assignedTo
     }
+    const {refetch} = useTasksData();
+
     const updateTaskModal = useDisclosure();
+
+
+    const handleDeleteTask = async () => {
+        try {
+            const response = await axios.delete(`/api/tasks/delete/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+            if (response.status === 200) {
+                refetch();
+                console.log("Task deleted successfully");
+            } else {
+                console.error("Failed to delete task");
+            }
+        } catch (error) {
+            console.error("Error deleting task:", error);
+        }
+    }
 
     return (
         <>
@@ -41,7 +64,7 @@ const TaskCard = ({id, title, description, status, assignedTo }: CardProps) => {
                             <span className='border w-1.5 ml-2.5 absolute top-6 border-[#8D9CB8] flex'></span>
                         </button>
                         <ActionsModal isOpen={updateTaskModal.isOpen} onClose={updateTaskModal.onOpenChange} type="update" updateData={selectedTask} />
-                        <button className=''>
+                        <button onClick={handleDeleteTask} className=''>
                             <TrashIcon className='h-5 w-5 text-red-500' />
                         </button>
                         <button className='bg-blue-500 flex gap-2 items-center rounded-lg py-1.5 px-3 '>
