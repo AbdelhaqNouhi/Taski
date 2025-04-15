@@ -1,4 +1,4 @@
-import React, {ReactNode, useEffect} from "react";
+import React, {ReactNode} from "react";
 import Image from "next/image";
 import {useDisclosure} from "@heroui/react";
 import {ActionsModal} from "@/components/pageItems/modals";

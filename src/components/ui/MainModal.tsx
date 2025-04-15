@@ -7,9 +7,7 @@ interface PopupProps {
     onClose: () => void;
     backdrop?: "blur" | "opaque" | "transparent";
     classNames?: string;
-    titleClassName?: string;
     bodyClassName?: string;
-    [x: string]: any;
 }
 
 const MainModal: FC<PopupProps> = ({
@@ -18,7 +16,6 @@ const MainModal: FC<PopupProps> = ({
     onClose,
     backdrop,
     classNames,
-    titleClassName,
     bodyClassName,
     ...props
 }) => {

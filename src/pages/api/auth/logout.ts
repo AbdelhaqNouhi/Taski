@@ -20,9 +20,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             message: "Logout successful",
         });
 
-    } catch (error: any) {
+    } catch (error) {
         console.error("🔴 Logout failed:", error.message);
-
         return res.status(500).json({
             message: "Logout failed",
             error: error.message || "Unknown error",

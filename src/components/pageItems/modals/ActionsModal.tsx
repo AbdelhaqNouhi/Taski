@@ -1,7 +1,7 @@
 import React, {useState, useMemo, useEffect} from "react";
 import {MainModal} from "@/components/ui/";
 import {usePagination} from "@/hooks";
-import {Input, Textarea, Select, SelectItem, button} from "@heroui/react";
+import {Input, Textarea, Select, SelectItem} from "@heroui/react";
 import axios from "axios";
 import {useTasksData} from "@/context/TasksProvider";
 
@@ -74,7 +74,7 @@ const ActionsModal: React.FC<ActionsModalProps> = ({isOpen, onClose, type, updat
                 setLoading(false);
             }
         } catch (error) {
-            setError("Failed to create task");
+            setError(error.message || "Failed to create task");
             setLoading(false);
         }
     };
@@ -98,7 +98,7 @@ const ActionsModal: React.FC<ActionsModalProps> = ({isOpen, onClose, type, updat
                 setLoading(false);
             }
         } catch (error) {
-            setError("Failed to update task");
+            setError(error.message || "Failed to update task");
             setLoading(false);
         }
     }
@@ -127,11 +127,16 @@ const ActionsModal: React.FC<ActionsModalProps> = ({isOpen, onClose, type, updat
 
     
     return (
-        <MainModal isOpen={isOpen} onClose={onClose} title="" backdrop="blur">
+        <MainModal isOpen={isOpen} onClose={onClose} backdrop="blur">
             <section className="w-[550px] flex flex-col gap-6 p-4">
-                <span className="flex items-center justify-center text-customGreen font-semibold text-2xl">
-                    {type === "add" ? "Add Task" : "Update Task"}
-                </span>
+                <div className="flex flex-col gap-2 items-center justify-center">
+                    <span className="text-customGreen font-semibold text-2xl">
+                        {type === "add" ? "Add Task" : "Update Task"}
+                    </span>
+                    <span className="h-4 text-xs text-red-500">
+                        {error}
+                    </span>
+                </div>
                 <div className="grid grid-cols-2 gap-4 font-semibold">
                     <div className="grid col-span-1">
                         <Input

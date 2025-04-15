@@ -20,7 +20,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         res.status(200).json(response.data);
         return req.headers.authorization || ""
         
-    } catch (error: any) {
+    } catch (error) {
         console.log(error)
         res.status(error.response?.status || 500).json({ message: error.message });
     }

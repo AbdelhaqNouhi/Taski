@@ -6,7 +6,7 @@ const Index = () => {
 
     useEffect(() => {
         router.push('/login');
-    }, []);
+    }, [router]);
 
     return null;
 };

@@ -38,7 +38,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             if (!token || isTokenExpired(token)) {
                 logout()
             } else {
-                const decoded: any = jwtDecode(token);
+                const decoded: { role: string; username: string } = jwtDecode(token);
                 setConnected(true);
                 setRole(decoded.role ?? null);
                 setUsername(decoded.username ?? null);

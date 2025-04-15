@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect } from "react";
+import React, { ReactNode } from "react";
 import { Header } from "./Header";
 import { useTasksData } from "@/context/TasksProvider";
 import { useAuth } from "@/context/AuthProvider";
@@ -10,7 +10,7 @@ interface MainLayoutProps {
 }
 
 export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
-    const { data, loading } = useTasksData();
+    const { data } = useTasksData();
     const {username, role} = useAuth();
     
     

@@ -3,7 +3,7 @@ import axios from "axios";
 import { useAuth } from "@/context/AuthProvider";
 
 export const usePagination = (endpoint: string) => {
-    const [data, setData] = useState<any | []>([]);
+    const [data, setData] = useState<string[] | []>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const { connected, authLoading } = useAuth();
@@ -20,7 +20,7 @@ export const usePagination = (endpoint: string) => {
             const result = response.data;
             
             setData(result || []);
-        } catch (error: any) {
+        } catch (error) {
             setError(error?.response?.data?.status || error.statusText || "Something went wrong");
             console.error("API Error:", error?.response || error);
         } finally {
@@ -29,9 +29,8 @@ export const usePagination = (endpoint: string) => {
     };
     
     useEffect(() => {
-        if (!connected || authLoading) return;
         fetchData();
-    }, [connected, authLoading]);
+    }, [connected, authLoading]); // Fetch data when connected or authLoading changes
 
     return { data, loading, error };
 };

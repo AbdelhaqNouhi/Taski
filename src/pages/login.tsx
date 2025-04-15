@@ -1,5 +1,5 @@
 import Image from "next/image";
-import {useState, useEffect} from "react";
+import {useState} from "react";
 import {useRouter} from "next/router";
 import axios from "axios";
 import { useAuth } from "@/context/AuthProvider";
@@ -31,8 +31,8 @@ const Login = () => {
             } else {
                 console.error("Login failed:", response.data.message);
             }
-        } catch (err) {
-            setError("Invalid credentials. Please try again.");
+        } catch (error) {
+            setError(error?.response?.data?.message || "Login failed");
             setTimeout(() => {
                 setError("");
             }, 10000);
