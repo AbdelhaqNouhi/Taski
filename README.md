@@ -44,7 +44,7 @@ Run the project
 ![Alt Text](./public/assets/images/screan/login.png)
 ![Alt Text](./public/assets/images/screan/dashboard.png)
 ![Alt Text](./public/assets/images/screan/addTask.png)
-![Alt Text](./public/assets/images/screan/updateTask.png)
+![Alt Text](./public/assets/images/screan/updatetask.png)
 ![Alt Text](./public/assets/images/screan/taskdone.png)
 
 
