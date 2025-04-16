@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Task-Management
 
-## Getting Started
+Our **task manager**, built with React and Next.js, lets Admins manage all tasks and assign them to users, while Regular users can view and update only their own. It includes login, task status updates
 
-First, run the development server:
+## Tech Stack in
+
+**Client:** Next.js, React, TailwindCSS
+
+
+## Quick start
+
+Clone the project
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+  git clone https://github.com/AbdelhaqNouhi/Taski.git
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Run the project
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+  npm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+  npm run dev
+```
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+## Endpoints
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Method    | Endpoint     | Description                |
+| :-------- | :------- | :------------------------- |
+| `POST` | `https://recruter-backend.vercel.app/api/login` | **Login**|
+| `GET` | `https://recruter-backend.vercel.app/api/tasks/` | **See Tasks**|
+| `POST` | `https://recruter-backend.vercel.app/api/tasks` | **Create Task**|
+| `PUT` | `https://recruter-backend.vercel.app/api/tasks/id` | **Update Task**|
+| `DELETE` | `https://recruter-backend.vercel.app/api/tasks/id` | **Delete Task**|
+| `GET` | `https://recruter-backend.vercel.app/api/users` | **See all users**|
+| `GET` | `https://recruter-backend.vercel.app/api/users/id` | **See user**|
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
+**OverView**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+![Alt Text](./public/assets/images/screan/login.png)
+![Alt Text](./public/assets/images/screan/dashboard.png)
+![Alt Text](./public/assets/images/screan/addTask.png)
+![Alt Text](./public/assets/images/screan/updateTask.png)
+![Alt Text](./public/assets/images/screan/taskdone.png)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Authors
+
+- [@Abdelhaq Nouhi]
