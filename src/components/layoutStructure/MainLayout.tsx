@@ -26,7 +26,11 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                             <span className=" font-bold text-3xl ">Welcome,</span>
                             <span className="font-bold text-blue-500 text-3xl">{username}.</span>
                         </div>
-                        <span className="text-[#8D9CB8]">Your team got {data.length} tasks to do.</span>
+                        {role === "admin" ? (
+                            <span className="text-[#8D9CB8]">Your team got {data.length} tasks to do.</span>
+                        ): (
+                            <span className="text-[#8D9CB8]">You’ve got {data.length} tasks to do.</span>
+                        )}
                     </div>
                 </div>
                 <section className="h-full">{children}</section>

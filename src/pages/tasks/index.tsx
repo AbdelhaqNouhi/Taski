@@ -2,28 +2,34 @@ import React, {useState} from "react";
 import {MainLayout} from "@/components";
 import {TaskLayout} from "@/components";
 import {useTasksData} from "@/context/TasksProvider";
-import {TaskCard} from "@/components/pageItems/tasks";;
+import {TaskCard} from "@/components/pageItems/tasks";
+import { useAuth } from '@/context/AuthProvider';
 
 const TasksContent = () => {
+    const {role, username} = useAuth();
+    const isUser = role === "user";
+    
     const {data, loading} = useTasksData();
+    const assignedTasks = isUser ? data.filter((task) => task.assignedTo === username) : data;
+    
+    
     const [currentPage, setCurrentPage] = useState(1);
     const tasksPerPage = 5;
     const totalPages = Math.ceil(data.length / tasksPerPage);
-    const currentTasks = data.slice(
+
+    const currentTasks = assignedTasks.slice(
         (currentPage - 1) * tasksPerPage,
         currentPage * tasksPerPage
     );
-    console.log();
-    
 
     return (
         <div className="">
-            {!loading && data.length === 0 && (
+            {!loading && assignedTasks.length === 0 && (
                 <span className="text-lg font-semibold flex justify-center items-center">
                     No tasks available
                 </span>
             )}
-            {loading && data.length === 0 ? (
+            {loading && assignedTasks.length === 0 ? (
                 <div className="flex justify-center items-center h-full">
                     <span className="text-lg font-semibold">Loading...</span>
                 </div>

@@ -4,6 +4,7 @@ import {usePagination} from "@/hooks";
 import {Input, Textarea, Select, SelectItem} from "@heroui/react";
 import axios from "axios";
 import {useTasksData} from "@/context/TasksProvider";
+import { useAuth } from "@/context/AuthProvider";
 
 interface ActionsModalProps {
     isOpen: boolean;
@@ -21,6 +22,8 @@ interface FormData {
 
 const ActionsModal: React.FC<ActionsModalProps> = ({isOpen, onClose, type, updateData}) => {
     
+    const {role} = useAuth();
+    const isAdmin = role === "admin";
     const {refetch} = useTasksData();
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
@@ -31,16 +34,19 @@ const ActionsModal: React.FC<ActionsModalProps> = ({isOpen, onClose, type, updat
         assignedTo: "",
         description: "",
     });
+
     const {data, loading: dataLoading} = usePagination("/user/getAll");
 
-    const userItems = useMemo(
-        () =>
-            data?.map((user: any) => ({
+    const userItems = useMemo(() =>
+        data
+            ?.filter((user: any) => user.role === "user")
+            .map((user: any) => ({
                 key: user.username,
                 label: user.username,
             })) || [],
         [data]
     );
+
 
     const handleInputChange = (field: string) => (value: string) => {
         setFormData((prev) => ({
@@ -138,7 +144,7 @@ const ActionsModal: React.FC<ActionsModalProps> = ({isOpen, onClose, type, updat
                     </span>
                 </div>
                 <div className="grid grid-cols-2 gap-4 font-semibold">
-                    <div className="grid col-span-1">
+                    <div className={`grid ${isAdmin ? "col-span-1" : "col-span-2"}`}>
                         <Input
                             onChange={(e) =>
                                 handleInputChange("title")(e.target.value)
@@ -154,28 +160,30 @@ const ActionsModal: React.FC<ActionsModalProps> = ({isOpen, onClose, type, updat
                             size="lg"
                         />
                     </div>
-                    <div className="grid col-span-1">
-                        <Select
-                            onChange={(e) =>
-                                handleInputChange("assignedTo")(e.target.value)
-                            }
-                            selectedKeys={formData.assignedTo ? [formData.assignedTo] : []} 
-                            className="max-w-xs"
-                            labelPlacement="outside"
-                            items={userItems}
-                            label="Assign to"
-                            placeholder="Assign to"
-                            radius="lg"
-                            size="lg"
-                            isLoading={dataLoading}
-                        >
-                            {(user: {key: string; label: string}) => (
-                                <SelectItem key={user.key}>
-                                    {user.label}
-                                </SelectItem>
-                            )}
-                        </Select>
-                    </div>
+                    {isAdmin && (
+                        <div className="grid col-span-1">
+                            <Select
+                                onChange={(e) =>
+                                    handleInputChange("assignedTo")(e.target.value)
+                                }
+                                selectedKeys={formData.assignedTo ? [formData.assignedTo] : []}
+                                className="max-w-xs"
+                                labelPlacement="outside"
+                                items={userItems}
+                                label="Assign to"
+                                placeholder="Assign to"
+                                radius="lg"
+                                size="lg"
+                                isLoading={dataLoading}
+                            >
+                                {(user: {key: string; label: string}) => (
+                                    <SelectItem key={user.key}>
+                                        {user.label}
+                                    </SelectItem>
+                                )}
+                            </Select>
+                        </div>
+                    )}
                 </div>
                 <div className="grid col-span-1 font-semibold">
                     <Textarea

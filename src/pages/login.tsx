@@ -6,8 +6,10 @@ import { useAuth } from "@/context/AuthProvider";
 import {Input} from "@heroui/react";
 import { EyeSlashIcon } from "@heroicons/react/16/solid";
 import { EyeIcon } from "@heroicons/react/24/solid";
+import { useTasksData } from '@/context/TasksProvider';
 
 const Login = () => {
+    const { refetch } = useTasksData();
     const [error, setError] = useState("");
     const [formData, setFormData] = useState({ username: "", password: "" });
     const [authLoading, setAuthLoading] = useState(false);
@@ -26,7 +28,8 @@ const Login = () => {
             const response = await axios.post("/api/auth/login", formData);
             if (response.status === 200) {
                 localStorage.setItem("token", response.data.user.token);
-                await checkConnection(); 
+                await checkConnection();
+                await refetch();
                 router.push("/tasks");
             } else {
                 console.error("Login failed:", response.data.message);
