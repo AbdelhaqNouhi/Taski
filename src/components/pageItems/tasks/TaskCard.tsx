@@ -15,6 +15,7 @@ interface CardProps {
 }
 const TaskCard = ({id, title, description, status, assignedTo }: CardProps) => {
 
+    const token = localStorage.getItem("token");
     const {role} = useAuth();
     const isAdmin = role === "admin";
     const isDone = status === "done";
@@ -33,7 +34,7 @@ const TaskCard = ({id, title, description, status, assignedTo }: CardProps) => {
         try {
             const response = await axios.delete(`/api/tasks/delete/${id}`, {
                 headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    Authorization: `Bearer ${token}`,
                 },
             });
             if (response.status === 200) {
@@ -51,7 +52,7 @@ const TaskCard = ({id, title, description, status, assignedTo }: CardProps) => {
         try {
             const response = await axios.put(`/api/tasks/update/${id}`, { status: "done" }, {
                 headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    Authorization: `Bearer ${token}`,
                 },
             });
             if (response.status === 200) {

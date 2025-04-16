@@ -1,7 +1,7 @@
 // pages/api/tasks/[id].ts
 import { NextApiRequest, NextApiResponse } from "next";
 import { jwtDecode } from "jwt-decode";
-import { checkPermission } from "@/utils/permissions"; // Import permissions config
+import { checkPermission } from "@/utils/permissions";
 import api from "@/lib/axiosInstance";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -20,12 +20,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const decoded: { role: string; username: string } = jwtDecode(token);
         const { role, username } = decoded;
 
-        // Check if the role is allowed to perform the "edit" action
         if (!checkPermission(role)?.edit) {
             return res.status(403).json({ message: "Forbidden: You do not have permission to edit tasks" });
         }
-
-        // You can add additional checks for ownership (e.g., a user can only edit their own tasks)
         if (role === "user") {
             const taskResponse = await api.get(`/tasks/${id}`, {
                 headers: {
@@ -37,8 +34,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 return res.status(403).json({ message: "Forbidden: You can only edit your own tasks" });
             }
         }
-
-        // Proceed with editing the task
         const response = await api.put(`/tasks/${id}`, req.body, {
             headers: {
                 Authorization: `Bearer ${token}`,

@@ -30,7 +30,7 @@ export const usePagination = (endpoint: string) => {
     
     useEffect(() => {
         fetchData();
-    }, [connected, authLoading]); // Fetch data when connected or authLoading changes
+    }, [connected, authLoading]);
 
     return { data, loading, error };
 };

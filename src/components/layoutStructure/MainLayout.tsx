@@ -16,7 +16,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     
     return (
         <section className="flex min-h-screen">
-            <div className="flex flex-col gap-2 w-full min-h-screen justify-between px-16 ">
+            <div className="flex flex-col gap-9 w-full min-h-screen justify-between px-16 ">
                 <div className="flex flex-col gap-12">
                     <section className="flex justify-between pt-8">
                         <Header role={role} username={username} />

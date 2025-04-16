@@ -22,6 +22,7 @@ interface FormData {
 
 const ActionsModal: React.FC<ActionsModalProps> = ({isOpen, onClose, type, updateData}) => {
     
+    const token = localStorage.getItem("token");
     const {role} = useAuth();
     const isAdmin = role === "admin";
     const {refetch} = useTasksData();
@@ -65,7 +66,6 @@ const ActionsModal: React.FC<ActionsModalProps> = ({isOpen, onClose, type, updat
     const handleAddTask = async () => {
         setLoading(true);
         try {
-            const token = localStorage.getItem("token");
             const response = await axios.post("/api/tasks/create", formData, {
                 headers: {
                     Authorization: token || "",
@@ -88,7 +88,6 @@ const ActionsModal: React.FC<ActionsModalProps> = ({isOpen, onClose, type, updat
     const handleUpdateTask = async () => {
         setLoading(true);
         try {
-            const token = localStorage.getItem("token");
             const response = await axios.put(`/api/tasks/update/${updateData.id}`, formData, {
                 headers: {
                     Authorization: token || "",
