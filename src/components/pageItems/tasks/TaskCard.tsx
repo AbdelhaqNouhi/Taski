@@ -85,8 +85,7 @@ const TaskCard = ({id, title, description, status, assignedTo }: CardProps) => {
                         </span>
                     </div>
                 </div>
-                {/* action */}
-                <div className='flex flex-col gap-2 justify-center items-end group-hover:flex hidden'>
+                <div className='group-hover:flex hidden flex-col gap-2 justify-center items-end'>
                     <div className='flex gap-3'>
                         {!isDone && (
                             <button onClick={updateTaskModal.onOpen} className='p-1 relative'>

@@ -107,28 +107,28 @@ const ActionsModal: React.FC<ActionsModalProps> = ({isOpen, onClose, type, updat
             setLoading(false);
         }
     }
-
+    
     useEffect(() => {
-        if (isOpen) {
-            if (type === "update" && updateData) {
-                setFormData({
-                    id: updateData.id,
-                    title: updateData.title || "",
-                    assignedTo: updateData.assignedTo || "",
-                    description: updateData.description || "",
-                });
-            } else if (type === "add") {
-                setFormData({
-                    id: "",
-                    title: "",
-                    assignedTo: "",
-                    description: "",
-                });
-            }
+        if (type === "update" && updateData) {
+            setFormData({
+                id: updateData.id,
+                title: updateData.title || "",
+                assignedTo: updateData.assignedTo || "",
+                description: updateData.description || "",
+            });
+        } else if (type === "add") {
+            setFormData({
+                id: "",
+                title: "",
+                assignedTo: "",
+                description: "",
+            });
         }
+        setTimeout(() => {
+            setError(null);
+        }, 10000);
     }, [isOpen, type, updateData]);
 
-    if (!isOpen) return null;
 
     
     return (

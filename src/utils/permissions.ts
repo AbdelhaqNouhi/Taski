@@ -7,9 +7,9 @@ const permissions = {
     },
     user: {
         create: false,
-        edit: true, // Can edit their own tasks
+        edit: true,
         delete: false,
-        view: true, // Can view all tasks assigned to them
+        view: true,
     },
 };
 

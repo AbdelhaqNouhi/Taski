@@ -98,7 +98,7 @@ const Login = () => {
                         <div className="flex flex-col gap-1 h-14">
                             <button
                                 disabled={authLoading}
-                                className="font-semibold rounded-xl bg-blue-500 py-3 text-white hover:bg-blue-600"
+                                className="font-semibold rounded-xl bg-blue-500 py-3 text-white hover:bg-blue-400"
                             >
                                 {authLoading ? "Logging in..." : "Login"}
                             </button>

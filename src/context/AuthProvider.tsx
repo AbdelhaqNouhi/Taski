@@ -64,7 +64,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     useEffect(() => {
         checkConnection();
-    }, []);
+    }, [connected, authLoading]);
 
     return (
         <AuthContext.Provider

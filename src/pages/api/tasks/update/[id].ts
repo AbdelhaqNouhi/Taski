@@ -18,22 +18,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     try {
         const decoded: { role: string; username: string } = jwtDecode(token);
-        const { role, username } = decoded;
+        const { role } = decoded;
 
         if (!checkPermission(role)?.edit) {
             return res.status(403).json({ message: "Forbidden: You do not have permission to edit tasks" });
         }
-        if (role === "user") {
-            const taskResponse = await api.get(`/tasks/${id}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
 
-            if (taskResponse.data.assignedTo !== username) {
-                return res.status(403).json({ message: "Forbidden: You can only edit your own tasks" });
-            }
-        }
         const response = await api.put(`/tasks/${id}`, req.body, {
             headers: {
                 Authorization: `Bearer ${token}`,

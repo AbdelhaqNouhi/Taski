@@ -2,6 +2,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { jwtDecode } from "jwt-decode";
 import api from "@/lib/axiosInstance";
+import { checkPermission } from "@/utils/permissions";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { id } = req.query;
@@ -16,26 +17,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     try {
-        const decoded: { role: string; username: string } = jwtDecode(token);
-        const { role, username } = decoded;
-
-        if (role === "admin") {
-            const response = await api.delete(`/tasks/${id}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            return res.status(200).json(response.data);
-        }
-
-        const taskResponse = await api.get(`/tasks/${id}`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-
-        if (taskResponse.data.assignedTo !== username) {
-            return res.status(403).json({ message: "Forbidden: You can only delete your own tasks" });
+        const decoded: { role: string } = jwtDecode(token);
+            const { role } = decoded;
+        if (!checkPermission(role)?.create) {
+            return res.status(403).json({ message: "Forbidden: You do not have permission to create tasks" });
         }
 
         const response = await api.delete(`/tasks/${id}`, {
